@@ -1,0 +1,24 @@
+@host = http://localhost:5100
+
+### R1. Buscar (máx. 20). Sin "search" devuelve las primeras 20 por código.
+GET {{host}}/api/offers?search=vida
+
+### Búsqueda sin tildes ni mayúsculas
+GET {{host}}/api/offers?search=PROTECCION campana 15
+
+### Detalle de una oferta
+GET {{host}}/api/offers/SEG-001
+
+### Confirmar venta. Reintentar con la MISMA Idempotency-Key devuelve la misma venta (200).
+POST {{host}}/api/sales
+Idempotency-Key: 6f1c2f0e-2d0b-4a53-9f43-111111111111
+Content-Type: application/json
+
+{ "offerCode": "SEG-001" }
+
+### Oferta sin cupos -> 409 sold-out
+POST {{host}}/api/sales
+Idempotency-Key: 6f1c2f0e-2d0b-4a53-9f43-222222222222
+Content-Type: application/json
+
+{ "offerCode": "SEG-003" }
